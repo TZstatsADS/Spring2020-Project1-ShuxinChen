@@ -1,0 +1,95 @@
+---
+title: "sentenceslist"
+author: "Shuxin Chen"
+date: "2/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This RMarkdown is designed for calculating analysis data which spending much time. 
+
+
+### Load Packages
+```{r, include=FALSE}
+packages.used=c("tm", "wordcloud", "RColorBrewer", 
+                "dplyr", "tydytext")
+
+# check packages that need to be installed.
+packages.needed=setdiff(packages.used, 
+                        intersect(installed.packages()[,1], 
+                                  packages.used))
+# install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE,
+                   repos='http://cran.us.r-project.org')
+}
+
+library(tm)
+library(wordcloud)
+library(RColorBrewer)
+library(dplyr)
+library(tidytext)
+library(data.table)
+library(tidyverse)
+library(DT)
+library(sentimentr)
+library(syuzhet)
+```
+
+### Load dataset and select data
+```{r include=FALSE}
+load('../output/processed_lyrics.RData')
+rock<-dt_lyrics%>%filter(genre=="Rock")
+rockart<-rock%>%group_by(artist)%>%summarise(count=n())%>%arrange(desc(count))
+rockfamous<-head(rockart,10)%>%pull(artist)
+tprock<-rock%>%filter(artist %in% rockfamous)%>%
+  mutate(lyricwords=unlist(map(lyrics, function(x) length(unlist(strsplit(x, split = " "))))),
+         stemno=unlist(map(stemmedwords, function(x) length(unlist(strsplit(x, split = " "))))),
+         ratio=round(lyricwords/stemno,3))
+
+metal<-dt_lyrics%>%filter(genre=="Metal")
+metalart<-metal%>%group_by(artist)%>%summarise(count=n())%>%arrange(desc(count))
+metalfamous<-head(metalart,10)%>%pull(artist)
+tpmetal<-metal%>%filter(artist %in% metalfamous)%>%
+  mutate(lyricwords=unlist(map(lyrics, function(x) length(unlist(strsplit(x, split = " "))))),
+         stemno=unlist(map(stemmedwords, function(x) length(unlist(strsplit(x, split = " "))))), 
+         ratio=round(lyricwords/stemno,3))
+rockmetal<-rbind(tprock, tpmetal)
+```
+
+
+###Calculate sentences list
+```{r include=FALSE}
+f.word_count=function(str){
+  library(stringr)
+  return(str_count(str, '\\w+'))
+}
+sentence.list<-NULL
+for (i in 1:nrow(rockmetal)){
+  sentences<-unlist(strsplit(rockmetal$lyrics[i], split = "\n"))
+  if(length(sentences)>1){
+    emotions<-get_nrc_sentiment(sentences)
+    word.count=f.word_count(sentences)
+    emotions=diag(1/(word.count+0.01))%*%as.matrix(emotions)
+    sentence.list=rbind(sentence.list, 
+                        cbind(rockmetal[i,1:7],
+                              sentences=as.character(sentences),
+                              word.count,
+                              emotions,
+                              sent.id=1:length(sentences)))
+     }
+    
+}
+
+
+sentence.list=sentence.list%>%
+  filter(!is.na(word.count))
+```
+
+### Export processed data
+```{r}
+save(sentence.list, file="../output/sentencelist.RData")
+```

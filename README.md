@@ -9,10 +9,10 @@ This is the first and only *individual* (as opposed to *team*) this semester.
 
 Term: Spring 2020
 
-+ Projec title: Lorem ipsum dolor sit amet
-+ This project is conducted by [your name]
++ Projec title: Rock Music vs. Metal Music 
++ This project is conducted by Shuxin Chen
 
-+ Project summary: [a short summary] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
++ Project summary: In this project, I compared and contrasted two misic genres, rock and metal. Sometimes, people classify the two kinds of music as one. Here, I analyzed their similarities and differences from the aspects of composition of lyrics, words used frequently and emotions expressed. It turned out that rock songs contain more abundant stem words and express positive emotion by romantic lyrics. While metal songs prefer repeating stem words to form lyrics and they use darker words to show relatively negative emotions. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
